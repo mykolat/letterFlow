@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<!-- HTML5 Hello world by kirupa - http://www.kirupa.com/html5/getting_your_feet_wet_html5_pg1.htm -->
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <title>Letter flow</title>
+  <style type="text/css">
+    * {
+      font-family: sans-serif;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      margin-left: 10px;
+    }
+    
+    input,
+    select {
+      font-size: 16px;
+      padding: 4px;
+    }
+    
+    pre {
+      margin: 0;
+      font-family: monospace;
+      background: #efefef;
+      font-size: 16px;
+      padding: 10px;
+      width: 50%;
+      float: right;
+    }
+  </style>
+</head>
+
+<body>
+  <pre id="output"></pre>
+  <p>Letters input:
+    <input type=number max=500 min=0 class="letters">
+  </p>
+  <p>Speed:
+    <input type=number max=1000 min=0 class="speed">
+  </p>
+  <!--
+<p>Output:
+  <input type="range" min=0 max=100 value=0 class="lettersOutput">
+</p> -->
+  <p>Reject:
+    <progress class="lettersTrash" min=0 max=100 value=0></progress>
+  </p>
+  <p>Output:
+    <progress class="lettersOutput" min=0 max=100 value=0></progress>
+  </p>
+  <hr>
+  <p>Writters:</p>
+  <div class="writters">
+    <p>On progress:
+      <progress class="onProcess" min=0 max=10 value=0></progress>
+    </p>
+    <p>Done:
+      <progress class="done" min=0 max=100 value=0></progress>
+    </p>
+    <p>Que:
+      <progress class="que" min=0 max=100 value=0></progress>
+    </p>
+    <p>Failed:
+      <progress class="failed" min=0 max=100 value=0></progress>
+    </p>
+    <p>Fail probability:
+      <input type=number max=100 min=0 step="0.1" class="failProbability">
+    </p>
+    <p>Workers
+      <input type=number max=100 min=0 class="unitsCount">
+    </p>
+  </div>
+  <hr>
+  <p>QaTeam1:</p>
+  <div class="qaTeam1">
+    <p>On progress:
+      <progress class="onProcess" min=0 max=10 value=0></progress>
+    </p>
+    <p>Done:
+      <progress class="done" min=0 max=100 value=0></progress>
+    </p>
+    <p>Que:
+      <progress class="que" min=0 max=100 value=0></progress>
+    </p>
+    <p>Failed:
+      <progress class="failed" min=0 max=100 value=0></progress>
+    </p>
+    <p>Fail probability:
+      <input type=number max=100 min=0 step="0.1" class="failProbability">
+    </p>
+    <p>Workers
+      <input type=number max=100 min=0 class="unitsCount">
+    </p>
+  </div>
+  <hr>
+  <p>QaTeam2:</p>
+  <div class="qaTeam2">
+    <p>On progress:
+      <progress class="onProcess" min=0 max=10 value=0></progress>
+    </p>
+    <p>Done:
+      <progress class="done" min=0 max=100 value=0></progress>
+    </p>
+    <p>Que:
+      <progress class="que" min=0 max=100 value=0></progress>
+    </p>
+    <p>Failed:
+      <progress class="failed" min=0 max=100 value=0></progress>
+    </p>
+    <p>Fail probability:
+      <input type=number max=100 min=0 step="0.1" class="failProbability">
+    </p>
+    <p>Workers
+      <input type=number max=100 min=0 class="unitsCount">
+    </p>
+  </div>
+  <hr>
+  <p>rcTeam:</p>
+  <div class="rcTeam">
+    <p>On progress:
+      <progress class="onProcess" min=0 max=10 value=0></progress>
+    </p>
+    <p>Done:
+      <progress class="done" min=0 max=100 value=0></progress>
+    </p>
+    <p>Que:
+      <progress class="que" min=0 max=100 value=0></progress>
+    </p>
+    <p>Failed:
+      <progress class="failed" min=0 max=100 value=0></progress>
+    </p>
+    <p>Fail probability:
+      <input type=number max=100 min=0 step="0.1" class="failProbability">
+    </p>
+  </div>
+
+
+  <script type="text/javascript" src="https://cdn.rawgit.com/remy/bind/928c52ce335d6fd2c824b536a97efa460554b9e0/dist/bind.min.js"></script>
+  <script type="text/javascript" src="/chance.min.js"></script>
+
+  <script type="text/javascript" src="units.js"></script>
+  <script type="text/javascript" src="collection.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+</body>
+
+</html>
