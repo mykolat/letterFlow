@@ -12,18 +12,19 @@ function UnitsCollection(failProbability = 0, nextTeam, nextTeamFail) {
 
 
 UnitsCollection.prototype.checkUnitsCount = function() {
-    let counter = this.unitsCount
-    counter -= this.units.length;
+    let counter = this.unitsCount - this.units.length;
+
     if (counter == 0) {
         return
     }
-    if (counter > 0) {
-        for (let i = 0; i < counter; i++) {
-            this.units.push(new Unit(8))
-        }
+
+    for (let i = 0; i < counter; i++) {
+        this.units.push(new Unit())
     }
-    else {
-        for (let i = 0; i < Math.abs(counter); i++) {
+
+    if (counter < 0) {
+        counter = Math.abs(counter)
+        for (let i = 0; i < counter; i++) {
             if (this.units[this.units.length - 1].busy == false)
                 this.units.pop()
         }
@@ -66,32 +67,37 @@ UnitsCollection.prototype.addTask = function() {
 
 UnitsCollection.prototype.doTask = function() {
     if (this.que > 0) {
-        let units = this.units.filter((element) => !element.busy)
-            // if (units.length > 0) {
-            // units
-        units.forEach((el) => {
-            if (el.addTask()) {
+        let availableUnits = this.units.filter((element) => !element.busy);
+
+        availableUnits.every((el) => {
+            if (this.que > 0 && el.addTask()) {
                 this.onProcess++;
                 this.que--;
+                return true
             }
-        })
-        return units.length
-            // }
+            else {
+                return false
+            }
+        });
+        return availableUnits.length
     }
     return false
 };
 
 UnitsCollection.prototype.tick = function() {
-    let that = this;
+    let that = this,
+        busyUnits = this.units.filter((el) => el.busy)
     this.checkUnitsCount()
         // if (this.que > 0) {
     this.doTask()
         // }
 
-    this.units.forEach(function(el) {
-        if (el.tick()) {
-            that.next()
-        }
+    busyUnits.forEach(function(el) {
+        setTimeout(() => {
+            if (el.tick()) {
+                that.next()
+            }
+        }, 0)
     })
 };
 
@@ -108,7 +114,10 @@ var collections = {
     },
     trash: {
         addTask: function() {
-            FlowController.lettersTrash++
+            FlowController.lettersRewritten++;
+            collections.writters.addTask()
+
+            // FlowController.lettersTrash++
         }
     },
     tick: function() {
@@ -143,7 +152,7 @@ collections.qaTeam1 = new UnitsCollection(0.1, "qaTeam2", "rcTeam");
 // collections.qaTeam1.addUnit(new Unit("Stark", 8));
 
 
-collections.rcTeam = new UnitsCollection(0.5, "qaTeam2", "writters");
+collections.rcTeam = new UnitsCollection(0.5, "qaTeam2", "trash");
 // collections.rcTeam.addUnit(new Unit("Bob", 13));
 
 collections.qaTeam2 = new UnitsCollection(0.1, "send", "rcTeam");

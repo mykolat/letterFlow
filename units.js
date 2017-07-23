@@ -1,32 +1,24 @@
-function Unit(speed = 5) {
+function Unit() {
+
     this.name = chance.name();
-    this.speed = speed;
+    // this.speed = FlowController.unitsSpeed;
     this.busy = false;
     this.timeout = 0;
     this.done = 0;
-    // this.sent = 0;
 }
 
 Unit.prototype.tick = function tick() {
-    if (this.timeout > 0 && this.busy) {
-        this.timeout--;
+    if (this.timeout > FlowController.time && this.busy) {
         return false
     }
     else {
         return this.produce()
     }
-
-    //  if (this.done > 0) {
-    //     this.done--;
-    //     this.sent++;
-    //     return true
-    // }
-    // return false
 }
 
 Unit.prototype.addTask = function() {
     if (!this.busy) {
-        this.timeout = this.speed;
+        this.timeout = FlowController.time + FlowController.unitsSpeed;
         this.busy = true;
         return true
     }
