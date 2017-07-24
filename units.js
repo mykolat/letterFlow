@@ -1,5 +1,4 @@
 function Unit() {
-
     this.name = chance.name();
     // this.speed = FlowController.unitsSpeed;
     this.busy = false;

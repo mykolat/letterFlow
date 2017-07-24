@@ -7,16 +7,16 @@ var FlowController = {
   unitsSpeed: 10,
   tick: function() {
     this.time++;
-    this.pushLetter()
+    this.pushLetters()
     this.teams.tick()
       // this.qualityCheck.tick()
     setTimeout(() => {
       this.tick()
     }, this.speed)
   },
-  pushLetter: function() {
-    if (this.lettersInput > 0 && this.teams.writters.addTask()) {
-      this.lettersInput--
+  pushLetters: function() {
+    if (this.lettersInput > 0 && this.teams.writters.addTask(this.lettersInput)) {
+      this.lettersInput = 0
     }
   },
   teams: collections //?
@@ -75,22 +75,6 @@ var data = Bind({
   'maillift.teams.rcTeam.failed': 'div.rcTeam .failed',
   'maillift.teams.rcTeam.failProbability': 'div.rcTeam .failProbability',
   'maillift.teams.rcTeam.unitsCount': 'div.rcTeam .unitsCount',
-
-  // 'maillift.teams.writters': {
-  //   dom: 'ul.teams',
-  //   transform: function(val) {
-
-  //     return escape(JSON.stringify(val, '', 2));
-  //   }
-  // },
-  // maillift: {
-  //   dom: 'ul.teams',
-  //   transform: function (name) {
-
-  //     return '<li>' + name + '</li>';
-  //   }
-  // }
-
 });
 
 // helper to dump the object in a <pre>

@@ -1,6 +1,7 @@
 function UnitsCollection(failProbability = 0, nextTeam, nextTeamFail) {
     this.onProcess = 0;
     this.done = 0;
+    this.ready = 0;
     this.que = 0;
     this.failed = 0;
     this.failProbability = failProbability;
@@ -32,24 +33,25 @@ UnitsCollection.prototype.checkUnitsCount = function() {
 }
 
 UnitsCollection.prototype.next = function next() {
-    if (this.failProbability == 0 || Math.random() > this.failProbability) {
-        if (this._nextTeam != undefined) {
-            this.onProcess--;
-            this.done++;
-            collections.call(this._nextTeam)
-                // this._nextTeam.addTask()
-        }
-    }
-    else if (this._nextTeamFail != undefined) {
-        this.onProcess--;
-        this.failed++;
-        collections.call(this._nextTeamFail)
-    }
-    else {
-        this.failed++;
-        this.onProcess--;
-    }
+    if (this.ready > 0) {
+        let failed = 0,
+            done;
+        if (this.failProbability > 0)
+            for (var i = 0; i < this.ready; i++)
+                failed += Math.random() < this.failProbability
+        done = this.ready - failed;
 
+        if (this._nextTeam != undefined && done > 0) {
+            this.done += done;
+            collections.call(this._nextTeam, done)
+        }
+        if (this._nextTeamFail != undefined && failed > 0) {
+            console.log(failed)
+            this.failed += failed;
+            collections.call(this._nextTeamFail, failed)
+        }
+        this.ready = 0
+    }
 };
 
 UnitsCollection.prototype.addUnit = function(unit) {
@@ -61,44 +63,55 @@ UnitsCollection.prototype.addNextTeam = function(nextTeam) {
 }
 
 
-UnitsCollection.prototype.addTask = function() {
-    return ++this.que;
+UnitsCollection.prototype.addTask = function(value) {
+    return this.que += value;
 };
 
 UnitsCollection.prototype.doTask = function() {
     if (this.que > 0) {
-        let availableUnits = this.units.filter((element) => !element.busy);
+        let availableUnits = this.units.filter((element) => !element.busy),
+            currentQue = this.que,
+            onProcess = this.onProcess;
 
         availableUnits.every((el) => {
-            if (this.que > 0 && el.addTask()) {
-                this.onProcess++;
-                this.que--;
+            if (currentQue > 0 && el.addTask()) {
+                onProcess++;
+                currentQue--;
                 return true
             }
             else {
                 return false
             }
         });
-        return availableUnits.length
+        this.que = currentQue;
+        this.onProcess = onProcess;
     }
-    return false
 };
 
 UnitsCollection.prototype.tick = function() {
     let that = this,
-        busyUnits = this.units.filter((el) => el.busy)
-    this.checkUnitsCount()
-        // if (this.que > 0) {
-    this.doTask()
-        // }
+        busyUnits = this.units.filter((el) => el.busy);
+    // currentReady = this.ready;
+    // currentOnProcess = 0;
 
-    busyUnits.forEach(function(el) {
-        setTimeout(() => {
-            if (el.tick()) {
-                that.next()
-            }
-        }, 0)
+
+
+
+
+    // currentOnProcess = this.onProcess;
+    busyUnits.forEach((el) => {
+        if (el.tick()) {
+            this.ready++;
+            this.onProcess--;
+        }
     })
+    this.checkUnitsCount()
+    this.doTask();
+
+    // this.ready = currentReady;
+    // this.onProcess = currentOnProcess;
+
+    this.next();
 };
 
 
@@ -108,16 +121,14 @@ var collections = {
     qaTeam2: null,
     rcTeam: null,
     send: {
-        addTask: function() {
-            FlowController.lettersOutput++
+        addTask: function(count) {
+            FlowController.lettersOutput += count
         }
     },
     trash: {
-        addTask: function() {
+        addTask: function(count) {
             FlowController.lettersRewritten++;
-            collections.writters.addTask()
-
-            // FlowController.lettersTrash++
+            collections.writters.addTask(count);
         }
     },
     tick: function() {
@@ -126,11 +137,10 @@ var collections = {
         this.rcTeam.tick();
         this.qaTeam2.tick();
     },
-    call: function(val) {
-        // if (UnitsCollection.prototype.isPrototypeOf(this[val])) {
+    call: function(val, count) {
         if (this[val] != undefined) {
             try {
-                this[val].addTask()
+                this[val].addTask(count)
             }
             catch (e) {}
         }
