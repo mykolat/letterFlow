@@ -37,18 +37,21 @@
 
 <body>
   <pre id="output"></pre>
-  <p>Letters input:
+  <p>Letters input(tick):
     <input type=number max=500 min=0 class="letters">
   </p>
-  <p>New units speed:
+  <p>Input speed (ticks):
+    <input type=number max=500 min=0 class="pushSpeed">
+  </p>
+  <p>Units speed(ticks):
     <input type=number max=500 min=0 class="unitsSpeed">
   </p>
-  <p>Speed:
+  <p>Tick speed(ms):
     <input type=number max=1000 min=0 class="speed">
   </p>
   <!--
 <p>Output:
-    <input type="range" min=0 max=100 value=0 class="lettersOutput">
+    <input type="range" min=0 max=100 value=<0></0> class="lettersOutput">
 </p> -->
   <p>Reject:
     <progress class="lettersTrash" min=0 max=100 value=0></progress>
@@ -61,15 +64,19 @@
   <div class="writters">
     <p>On progress:
       <progress class="onProcess" min=0 max=10 value=0></progress>
+      <pre class="onProcess" min=0 max=100 value=0></pre>
     </p>
     <p>Done:
-      <progress class="done" min=0 max=100 value=0></progress>
-    </p>
+      <progress class="done" min=0 max=1000 value=0></progress>
+      <pre class="done" min=0 max=100 value=0></pre>
+    </p><br>
     <p>Que:
       <progress class="que" min=0 max=100 value=0></progress>
+      <pre class="que" min=0 max=100 value=0></pre>
     </p>
     <p>Failed:
       <progress class="failed" min=0 max=100 value=0></progress>
+      <pre class="failed" min=0 max=100 value=0></pre>
     </p>
     <p>Fail probability:
       <input type=number max=100 min=0 step="0.1" class="failProbability">
@@ -83,18 +90,22 @@
   <div class="qaTeam1">
     <p>On progress:
       <progress class="onProcess" min=0 max=10 value=0></progress>
+      <pre class="onProcess" min=0 max=100 value=0></pre>
     </p>
     <p>Done:
-      <progress class="done" min=0 max=100 value=0></progress>
-    </p>
+      <progress class="done" min=0 max=200 value=0></progress>
+      <pre class="done" min=0 max=100 value=0></pre>
+    </p><br>
     <p>Que:
       <progress class="que" min=0 max=100 value=0></progress>
+      <pre class="que" min=0 max=100 value=0></pre>
     </p>
     <p>Failed:
       <progress class="failed" min=0 max=100 value=0></progress>
+      <pre class="failed" min=0 max=100 value=0></pre>
     </p>
     <p>Fail probability:
-      <input type=number max=100 min=0 step="0.1" class="failProbability">
+      <input type=number max=200 min=0 step="0.1" class="failProbability">
     </p>
     <p>Workers
       <input type=number max=100 min=0 class="unitsCount">
@@ -103,20 +114,24 @@
   <hr>
   <p>QaTeam2:</p>
   <div class="qaTeam2">
-    <p>On progress:
+   <p>On progress:
       <progress class="onProcess" min=0 max=10 value=0></progress>
+      <pre class="onProcess" min=0 max=100 value=0></pre>
     </p>
     <p>Done:
-      <progress class="done" min=0 max=100 value=0></progress>
-    </p>
+      <progress class="done" min=0 max=200 value=0></progress>
+      <pre class="done" min=0 max=100 value=0></pre>
+    </p><br>
     <p>Que:
       <progress class="que" min=0 max=100 value=0></progress>
+      <pre class="que" min=0 max=100 value=0></pre>
     </p>
     <p>Failed:
       <progress class="failed" min=0 max=100 value=0></progress>
+      <pre class="failed" min=0 max=100 value=0></pre>
     </p>
     <p>Fail probability:
-      <input type=number max=100 min=0 step="0.1" class="failProbability">
+      <input type=number max=200 min=0 step="0.1" class="failProbability">
     </p>
     <p>Workers
       <input type=number max=100 min=0 class="unitsCount">
@@ -127,18 +142,22 @@
   <div class="rcTeam">
     <p>On progress:
       <progress class="onProcess" min=0 max=10 value=0></progress>
+      <pre class="onProcess" min=0 max=100 value=0></pre>
     </p>
     <p>Done:
-      <progress class="done" min=0 max=100 value=0></progress>
-    </p>
+      <progress class="done" min=0 max=200 value=0></progress>
+      <pre class="done" min=0 max=100 value=0></pre>
+    </p><br>
     <p>Que:
       <progress class="que" min=0 max=100 value=0></progress>
+      <pre class="que" min=0 max=100 value=0></pre>
     </p>
     <p>Failed:
       <progress class="failed" min=0 max=100 value=0></progress>
+      <pre class="failed" min=0 max=100 value=0></pre>
     </p>
     <p>Fail probability:
-      <input type=number max=100 min=0 step="0.1" class="failProbability">
+      <input type=number max=200 min=0 step="0.1" class="failProbability">
     </p>
     <p>Workers
       <input type=number max=100 min=0 class="unitsCount">

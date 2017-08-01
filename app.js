@@ -2,22 +2,24 @@ var FlowController = {
   time: 0,
   lettersOutput: 0,
   lettersRewritten: 0,
-  lettersInput: 100,
+  lettersInput: 2,
+  pushSpeed: 5,
+  lettersOrdered: 0,
   speed: 100,
   unitsSpeed: 10,
   tick: function() {
     this.time++;
     this.pushLetters()
     this.teams.tick()
-      // this.qualityCheck.tick()
     setTimeout(() => {
       this.tick()
     }, this.speed)
   },
   pushLetters: function() {
-    if (this.lettersInput > 0 && this.teams.writters.addTask(this.lettersInput)) {
-      this.lettersInput = 0
-    }
+    if (this.time % this.pushSpeed == 0)
+      if (this.lettersInput >= 1 && this.teams.writters.addTask(this.lettersInput)) {
+        this.lettersOrdered += this.lettersInput
+      }
   },
   teams: collections //?
 }
@@ -25,18 +27,17 @@ var FlowController = {
 FlowController.tick();
 
 
-var flag = true;
+var syncedOutput = true;
 var data = Bind({
   maillift: FlowController,
 }, {
   maillift: {
     callback: function() {
-      if (flag) {
-        flag = false;
+      if (syncedOutput) {
+        syncedOutput = false;
         setTimeout(() => {
           document.querySelector('#output').innerHTML = escape(JSON.stringify(this.__export(), '', 2));
-          flag = true;
-
+          syncedOutput = true;
         }, 0)
       }
     },
@@ -45,6 +46,7 @@ var data = Bind({
   'maillift.lettersInput': '.letters',
   'maillift.lettersOutput': '.lettersOutput',
   'maillift.speed': '.speed',
+  'maillift.pushSpeed': '.pushSpeed',
   'maillift.unitsSpeed': '.unitsSpeed',
   // 'maillift.lettersTrash': '.lettersTrash',
   'maillift.teams.writters.onProcess': 'div.writters .onProcess',

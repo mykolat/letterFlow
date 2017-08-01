@@ -1,14 +1,14 @@
-function UnitsCollection(failProbability = 0, nextTeam, nextTeamFail) {
+function UnitsCollection(config) {
     this.onProcess = 0;
     this.done = 0;
     this.ready = 0;
     this.que = 0;
     this.failed = 0;
-    this.failProbability = failProbability;
-    this._nextTeam = nextTeam;
-    this._nextTeamFail = nextTeamFail;
+    this.failProbability = config.failProbability || 0;
+    this._nextTeam = config.nextTeam;
+    this._nextTeamFail = config.nextTeamFail;
     this.units = new Array();
-    this.unitsCount = 3;
+    this.unitsCount = config.unitsCount || 3;
 }
 
 
@@ -46,7 +46,7 @@ UnitsCollection.prototype.next = function next() {
             collections.call(this._nextTeam, done)
         }
         if (this._nextTeamFail != undefined && failed > 0) {
-            console.log(failed)
+            // console.log(failed)
             this.failed += failed;
             collections.call(this._nextTeamFail, failed)
         }
@@ -90,9 +90,10 @@ UnitsCollection.prototype.doTask = function() {
 
 UnitsCollection.prototype.tick = function() {
     let that = this,
-        busyUnits = this.units.filter((el) => el.busy);
-    // currentReady = this.ready;
-    // currentOnProcess = 0;
+        busyUnits = this.units.filter((el) => el.busy),
+        // ready = this.ready;
+        currentReady = this.ready,
+        currentOnProcess = this.onProcess;
 
 
 
@@ -101,10 +102,13 @@ UnitsCollection.prototype.tick = function() {
     // currentOnProcess = this.onProcess;
     busyUnits.forEach((el) => {
         if (el.tick()) {
-            this.ready++;
-            this.onProcess--;
+            currentReady++
+            currentOnProcess--;
         }
     })
+    this.ready = currentReady;
+    this.onProcess = currentOnProcess;
+
     this.checkUnitsCount()
     this.doTask();
 
@@ -147,28 +151,29 @@ var collections = {
     }
 }
 
-collections.writters = new UnitsCollection(0, "qaTeam1");
-// collections.writters.setUnits(4)
-// collections.writters.addUnit(new Unit("Clark", 5));
-// collections.writters.addUnit(new Unit("Jane", 10));
-// collections.writters.addUnit(new Unit("Jane", 10));
-// collections.writters.addUnit(new Unit("Jane", 10));
-// collections.writters.addUnit(new Unit("Jane", 10));
-// collections.writters.addUnit(new Unit("Jane", 10));
-// collections.writters.addUnit(new Unit("Jane", 10));
+collections.writters = new UnitsCollection({
+    failProbability: 0,
+    nextTeam: "qaTeam1",
+    unitsCount: 5
+});
 
-collections.qaTeam1 = new UnitsCollection(0.1, "qaTeam2", "rcTeam");
-// collections.qaTeam1.addUnit(new Unit("Tony", 8));
-// collections.qaTeam1.addUnit(new Unit("Stark", 8));
+collections.qaTeam1 = new UnitsCollection({
+    failProbability: 0.1,
+    nextTeam: "qaTeam2",
+    nextTeamFail: "rcTeam",
+    unitsCount: 5
+});
 
+collections.rcTeam = new UnitsCollection({
+    failProbability: 0.5,
+    nextTeam: "qaTeam2",
+    nextTeamFail: "trash",
+    unitsCount: 1
+});
 
-collections.rcTeam = new UnitsCollection(0.5, "qaTeam2", "trash");
-// collections.rcTeam.addUnit(new Unit("Bob", 13));
-
-collections.qaTeam2 = new UnitsCollection(0.1, "send", "rcTeam");
-// collections.qaTeam2.addUnit(new Unit("Brian", 5));
-// collections.qaTeam2.addUnit(new Unit("Mirla", 5));
-// collections.qaTeam2.addUnit(new Unit("Bonie", 5));
-
-// collections.lastTeam = new UnitsCollection();
-// collections.lastTeam.addUnit(new Unit("Sender", 10));
+collections.qaTeam2 = new UnitsCollection({
+    failProbability: 0.1,
+    nextTeam: "send",
+    nextTeamFail: "rcTeam",
+    unitsCount: 5
+});
