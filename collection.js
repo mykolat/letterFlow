@@ -1,122 +1,120 @@
-function UnitsCollection(config) {
-    this.onProcess = 0;
-    this.done = 0;
-    this.ready = 0;
-    this.que = 0;
-    this.failed = 0;
-    this.failProbability = config.failProbability || 0;
-    this._nextTeam = config.nextTeam;
-    this._nextTeamFail = config.nextTeamFail;
-    this.units = new Array();
-    this.unitsCount = config.unitsCount || 3;
-}
-
-
-UnitsCollection.prototype.checkUnitsCount = function() {
-    let counter = this.unitsCount - this.units.length;
-
-    if (counter == 0) {
-        return
+class UnitsCollection {
+    constructor(config) {
+        this.onProcess = 0;
+        this.done = 0;
+        this.ready = 0;
+        this.que = 0;
+        this.failed = 0;
+        this.failProbability = config.failProbability || 0;
+        this._nextTeam = config.nextTeam;
+        this._nextTeamFail = config.nextTeamFail;
+        this.units = new Array();
+        this.unitsCount = config.unitsCount || 3;
     }
 
-    for (let i = 0; i < counter; i++) {
-        this.units.push(new Unit())
-    }
+    checkUnitsCount() {
+        let counter = this.unitsCount - this.units.length;
 
-    if (counter < 0) {
-        counter = Math.abs(counter)
+        if (counter == 0) {
+            return
+        }
+
         for (let i = 0; i < counter; i++) {
-            if (this.units[this.units.length - 1].busy == false)
-                this.units.pop()
+            this.units.push(new Unit())
         }
-    }
-}
 
-UnitsCollection.prototype.next = function next() {
-    if (this.ready > 0) {
-        let failed = 0,
-            done;
-        if (this.failProbability > 0)
-            for (var i = 0; i < this.ready; i++)
-                failed += Math.random() < this.failProbability
-        done = this.ready - failed;
-
-        if (this._nextTeam != undefined && done > 0) {
-            this.done += done;
-            collections.call(this._nextTeam, done)
-        }
-        if (this._nextTeamFail != undefined && failed > 0) {
-            // console.log(failed)
-            this.failed += failed;
-            collections.call(this._nextTeamFail, failed)
-        }
-        this.ready = 0
-    }
-};
-
-UnitsCollection.prototype.addUnit = function(unit) {
-    this.units.push(unit)
-}
-
-UnitsCollection.prototype.addNextTeam = function(nextTeam) {
-    this._nextTeam = nextTeam;
-}
-
-
-UnitsCollection.prototype.addTask = function(value) {
-    return this.que += value;
-};
-
-UnitsCollection.prototype.doTask = function() {
-    if (this.que > 0) {
-        let availableUnits = this.units.filter((element) => !element.busy),
-            currentQue = this.que,
-            onProcess = this.onProcess;
-
-        availableUnits.every((el) => {
-            if (currentQue > 0 && el.addTask()) {
-                onProcess++;
-                currentQue--;
-                return true
+        if (counter < 0) {
+            counter = Math.abs(counter)
+            for (let i = 0; i < counter; i++) {
+                if (this.units[this.units.length - 1].busy == false)
+                    this.units.pop()
             }
-            else {
-                return false
-            }
-        });
-        this.que = currentQue;
-        this.onProcess = onProcess;
-    }
-};
-
-UnitsCollection.prototype.tick = function() {
-    let that = this,
-        busyUnits = this.units.filter((el) => el.busy),
-        // ready = this.ready;
-        currentReady = this.ready,
-        currentOnProcess = this.onProcess;
-
-
-
-
-
-    // currentOnProcess = this.onProcess;
-    busyUnits.forEach((el) => {
-        if (el.tick()) {
-            currentReady++
-            currentOnProcess--;
         }
-    })
-    this.ready = currentReady;
-    this.onProcess = currentOnProcess;
+    }
 
-    this.checkUnitsCount()
-    this.doTask();
+    next() {
+        if (this.ready > 0) {
+            let failed = 0,
+                done;
+            if (this.failProbability > 0)
+                for (var i = 0; i < this.ready; i++)
+                    failed += Math.random() < this.failProbability
+            done = this.ready - failed;
 
-    // this.ready = currentReady;
-    // this.onProcess = currentOnProcess;
+            if (this._nextTeam != undefined && done > 0) {
+                this.done += done;
+                collections.call(this._nextTeam, done)
+            }
+            if (this._nextTeamFail != undefined && failed > 0) {
+                // console.log(failed)
+                this.failed += failed;
+                collections.call(this._nextTeamFail, failed)
+            }
+            this.ready = 0
+        }
+    }
+    addUnit(unit) {
+        this.units.push(unit)
+    }
+    addNextTeam(nextTeam) {
+        this._nextTeam = nextTeam;
+    }
 
-    this.next();
-};
+    addTask(value) {
+        return this.que += value;
+    }
+
+    doTask() {
+        if (this.que > 0) {
+            let availableUnits = this.units.filter((element) => !element.busy),
+                currentQue = this.que,
+                onProcess = this.onProcess;
+
+            availableUnits.every((el) => {
+                if (currentQue > 0 && el.addTask()) {
+                    onProcess++;
+                    currentQue--;
+                    return true
+                }
+                else {
+                    return false
+                }
+            });
+            this.que = currentQue;
+            this.onProcess = onProcess;
+        }
+    }
+
+    tick() {
+        let that = this,
+            busyUnits = this.units.filter((el) => el.busy),
+            // ready = this.ready;
+            currentReady = this.ready,
+            currentOnProcess = this.onProcess;
+
+
+
+
+
+        // currentOnProcess = this.onProcess;
+        busyUnits.forEach((el) => {
+            if (el.tick()) {
+                currentReady++
+                currentOnProcess--;
+            }
+        })
+        this.ready = currentReady;
+        this.onProcess = currentOnProcess;
+
+        this.checkUnitsCount()
+        this.doTask();
+
+        // this.ready = currentReady;
+        // this.onProcess = currentOnProcess;
+
+        this.next();
+    };
+}
 
 
 var collections = {
